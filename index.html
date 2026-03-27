@@ -6,6 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Club Ajedrez Mercenarios</title>
 
+  <!-- LIBS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard.js/1.0.0/chessboard-1.0.0.min.css" />
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -161,6 +166,33 @@
         padding: 10px 20px;
       }
     }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-content {
+      background: #1e293b;
+      margin: 40px auto;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+    }
   </style>
 
 </head>
@@ -179,6 +211,16 @@
     </div>
   </div>
 
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">✖</span>
+      <div id="board" style="width:100%; max-width:350px; margin:auto;"></div>
+      <br>
+      <button onclick="prev()">◀</button>
+      <button onclick="next()">▶</button>
+    </div>
+  </div>
   <!-- TORNEOS ACTUALES -->
   <div id="actuales" class="page active">
     <h1>♟️ Torneo FIDE Mercenarios 245</h1>
@@ -205,7 +247,6 @@
     <h1>🔥 Chismes</h1>
     <p>Drama ajedrecístico en desarrollo… 👀</p>
   </div>
-
   <script>
 
     // NAV
@@ -249,6 +290,7 @@
     ];
 
     // HELPERS
+
     function getResult(p1, p2) {
       const match = matches.find(m =>
         (m.white === p1 && m.black === p2) ||
@@ -264,6 +306,11 @@
       } else {
         score = match.result === 1 ? 0 :
           match.result === 0 ? 1 : 0.5;
+      }
+
+      // 🔥 SOLO PRIMER PARTIDA (Fran vs Wero)
+      if ((p1 === 1 && p2 === 2 && score === 1)) {
+        return `<span class="win" onclick="openGame()">1</span>`;
       }
 
       if (score === 1) return '<span class="win">1</span>';
@@ -329,9 +376,63 @@
     }
 
     renderTable();
+    // PGN VIEWER
+    let game = new Chess();
+    //let board = Chessboard('board', { position: 'start' });
+    let moves = [];
+    let index = 0;
+    let board; // global
+
+    function openGame() {
+      document.getElementById("modal").style.display = "block";
+
+      if (board) {
+        board.destroy();
+      }
+
+      setTimeout(() => {
+        board = Chessboard('board', { position: 'start' });
+        board.resize(); // 🔥 clave
+      }, 50);
+
+      fetch("data/game1.pgn")
+        .then(r => r.text())
+        .then(pgn => {
+          game.load_pgn(pgn);
+          moves = game.history();
+          game.reset();
+          index = 0;
+
+          setTimeout(() => {
+            board.position('start');
+          }, 100);
+        });
+    }
+
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function next() {
+      if (index < moves.length) {
+        game.move(moves[index++]);
+        board.position(game.fen());
+      }
+    }
+
+    function prev() {
+      if (index > 0) {
+        game.undo();
+        index--;
+        board.position(game.fen());
+      }
+    }
+
+
+
+
 
   </script>
-
 </body>
 
 </html>
