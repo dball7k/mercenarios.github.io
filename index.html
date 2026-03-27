@@ -425,7 +425,7 @@
     function next() {
       if (index < moves.length) {
         game.move(moves[index++]);
-        board.position(game.fen());
+        board.position(game.fen(),true);
       }
     }
 
