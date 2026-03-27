@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Club Ajedrez Mercenarios</title>
+<title>Chess App</title>
 
 <style>
 body {
@@ -16,11 +16,24 @@ body {
 /* NAVBAR */
 .navbar {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #020617;
-  padding: 12px;
-  gap: 15px;
+  padding: 12px 16px;
   border-bottom: 1px solid #334155;
-  justify-content: space-around;
+  position: relative;
+}
+
+.menu-toggle {
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: white;
+}
+
+.menu {
+  display: flex;
+  gap: 20px;
 }
 
 .nav-item {
@@ -95,6 +108,7 @@ th {
 
 /* MOBILE */
 @media (max-width: 600px) {
+
   h1 {
     font-size: 18px;
   }
@@ -108,8 +122,28 @@ th {
     min-width: 120px;
   }
 
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu {
+    display: none;
+    flex-direction: column;
+    background: #020617;
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    padding: 10px 0;
+    border-top: 1px solid #334155;
+  }
+
+  .menu.active {
+    display: flex;
+  }
+
   .nav-item {
-    font-size: 14px;
+    padding: 10px 20px;
   }
 }
 </style>
@@ -120,14 +154,18 @@ th {
 
 <!-- NAVBAR -->
 <div class="navbar">
-  <div class="nav-item active" onclick="showPage('torneos', this)">Torneos</div>
-  <div class="nav-item" onclick="showPage('fotos', this)">Fotos</div>
-  <div class="nav-item" onclick="showPage('chismes', this)">Chismes</div>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <div class="menu" id="menu">
+    <div class="nav-item active" onclick="showPage('torneos', this)">Torneos</div>
+    <div class="nav-item" onclick="showPage('fotos', this)">Fotos</div>
+    <div class="nav-item" onclick="showPage('chismes', this)">Chismes</div>
+  </div>
 </div>
 
 <!-- TORNEOS -->
 <div id="torneos" class="page active">
-  <h1>♟️ FIDE Mercenarios 245</h1>
+  <h1>♟️ Tabla Cruzada</h1>
 
   <div class="table-container">
     <table id="crossTable"></table>
@@ -149,12 +187,19 @@ th {
 <script>
 
 // NAV
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("active");
+}
+
 function showPage(pageId, element) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pageId).classList.add("active");
 
   document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
   element.classList.add("active");
+
+  // cerrar menú en móvil
+  document.getElementById("menu").classList.remove("active");
 }
 
 // PLAYERS
