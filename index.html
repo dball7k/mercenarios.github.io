@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Chess App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Club Ajedrez Mercenarios</title>
 
 <style>
 body {
@@ -16,14 +17,16 @@ body {
 .navbar {
   display: flex;
   background: #020617;
-  padding: 10px 20px;
-  gap: 20px;
+  padding: 12px;
+  gap: 15px;
   border-bottom: 1px solid #334155;
+  justify-content: space-around;
 }
 
 .nav-item {
   cursor: pointer;
   color: #94a3b8;
+  font-size: 16px;
 }
 
 .nav-item.active {
@@ -34,24 +37,33 @@ body {
 /* CONTENT */
 .page {
   display: none;
-  padding: 20px;
+  padding: 15px;
 }
 
 .page.active {
   display: block;
 }
 
+/* TABLE CONTAINER */
+.table-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+
 /* TABLE */
 table {
   border-collapse: collapse;
+  min-width: 700px;
   width: 100%;
 }
 
 th, td {
   border: 1px solid #334155;
-  padding: 6px;
+  padding: 8px;
   text-align: center;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 th {
@@ -61,6 +73,7 @@ th {
 .player-name {
   text-align: left;
   padding-left: 10px;
+  min-width: 140px;
 }
 
 .player-link {
@@ -80,7 +93,27 @@ th {
 .draw { color: #eab308; }
 .loss { color: #ef4444; }
 
+/* MOBILE */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 18px;
+  }
+
+  th, td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .player-name {
+    min-width: 120px;
+  }
+
+  .nav-item {
+    font-size: 14px;
+  }
+}
 </style>
+
 </head>
 
 <body>
@@ -94,8 +127,11 @@ th {
 
 <!-- TORNEOS -->
 <div id="torneos" class="page active">
-  <h1>♟️ Tabla Cruzada</h1>
-  <table id="crossTable"></table>
+  <h1>♟️ FIDE Mercenarios 245</h1>
+
+  <div class="table-container">
+    <table id="crossTable"></table>
+  </div>
 </div>
 
 <!-- FOTOS -->
@@ -107,12 +143,12 @@ th {
 <!-- CHISMES -->
 <div id="chismes" class="page">
   <h1>🔥 Chismes</h1>
-  <p>Quién le ganó a quién, polémicas, drama… 👀</p>
+  <p>Drama ajedrecístico en desarrollo… 👀</p>
 </div>
 
 <script>
 
-// NAVIGATION
+// NAV
 function showPage(pageId, element) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById(pageId).classList.add("active");
@@ -193,7 +229,7 @@ function renderPlayerName(player){
   return player.name;
 }
 
-// RENDER TABLE
+// RENDER
 function renderTable(){
 
   let html = "<tr><th>#</th><th>Jugador</th>";
