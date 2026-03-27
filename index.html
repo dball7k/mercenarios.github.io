@@ -396,7 +396,11 @@
       }
 
       setTimeout(() => {
-        board = Chessboard('board', { position: 'start' });
+        board = Chessboard('board', {
+          position: 'start', moveSpeed: 'slow',
+          snapbackSpeed: 500,
+          snapSpeed: 100,
+        });
         board.resize(); // 🔥 clave
       }, 50);
 
